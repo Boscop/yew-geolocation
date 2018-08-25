@@ -43,7 +43,7 @@ impl Component for Model {
 	fn update(&mut self, msg: Self::Message) -> ShouldRender {
 		self.console.log(&format!("msg: {:?}", msg));
 		let error_cb = self.link.send_back(Msg::PositionError);
-		let options = PositionOptions { enable_high_accuracy: true, ..Default::default() };
+		let options = PositionOptions { enable_high_accuracy: true, timeout_ms: 10000, ..Default::default() };
 		use self::Msg::*;
 		match msg {
 			GetPosition => self.geolocation_service.get_current_position(self.link.send_back(Msg::CurPosition), Some(error_cb), Some(options)),
