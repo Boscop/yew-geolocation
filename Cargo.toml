@@ -7,10 +7,14 @@ authors = ["Boscop"]
 edition = '2018'
 
 [dependencies]
-yew = { git = 'https://github.com/DenisKolodin/yew', rev = '7e921ff' }
+yew = { git = 'https://github.com/DenisKolodin/yew' }
 stdweb = "0.4"
-stdweb-derive = "0.4"
 serde = "1.0"
 serde_derive = "1.0"
 smart-default = "0.2"
+num-traits = "0.2"
+num-derive = "0.2"
+
+[dev-dependencies]
 derive-new = "0.5"
+failure = "0.1"
