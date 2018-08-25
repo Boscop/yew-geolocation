@@ -1,12 +1,10 @@
 #![recursion_limit = "128"]
 
-#[macro_use] extern crate smart_default;
-#[macro_use] extern crate serde_derive;
-#[macro_use] extern crate num_derive;
-
+use std::convert::From;
 use yew::{prelude::*, services::Task};
-use stdweb::*;
-use stdweb::unstable::TryInto;
+use stdweb::{*, unstable::TryInto};
+use serde_derive::*;
+use smart_default::*;
 
 // https://w3c.github.io/geolocation-api/#idl-index
 
@@ -62,20 +60,23 @@ pub struct PositionError {
 }
 
 #[repr(u16)]
-#[derive(Debug, PartialEq, FromPrimitive)]
+#[derive(Debug, PartialEq)]
 pub enum PositionErrorCode {
 	PermissionDenied = 1,
-	InternalPositionUnavailable = 2,
+	PositionUnavailable = 2,
 	Timeout = 3,
 }
 
-use std::convert::From;
-use num_traits::FromPrimitive;
-
 impl From<InternalPositionError> for PositionError {
 	fn from(x: InternalPositionError) -> Self {
+		use self::PositionErrorCode::*;
 		Self {
-			code: PositionErrorCode::from_u16(x.code).unwrap(),
+			code: match x.code {
+				1 => PermissionDenied,
+				2 => PositionUnavailable,
+				3 => Timeout,
+				_ => unreachable!()
+			},
 			message: x.message,
 		}
 	}
