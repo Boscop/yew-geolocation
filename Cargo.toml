@@ -1,5 +1,3 @@
-cargo-features = ["edition"]
-
 [package]
 name = "yew-geolocation"
 version = "0.1.0"
@@ -7,7 +5,7 @@ authors = ["Boscop"]
 edition = '2018'
 
 [dependencies]
-yew = { git = 'https://github.com/DenisKolodin/yew' }
+yew = { git = 'https://github.com/DenisKolodin/yew', rev = '5a040a1' }
 stdweb = "0.4"
 serde = "1.0"
 serde_derive = "1.0"

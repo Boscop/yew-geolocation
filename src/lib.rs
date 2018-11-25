@@ -5,7 +5,7 @@
 macro_rules! serde_conv {
 	($m:ident, $t:ty, /*$ser:expr,*/ $de:expr) => {
 		pub mod $m {
-			use serde::{/*Serialize, Serializer,*/ Deserialize, Deserializer};
+			use ::serde::{/*Serialize, Serializer,*/ Deserialize, Deserializer};
 			use super::*;
 /*
 			pub fn serialize<S: Serializer>(x: &$t, serializer: S) -> Result<S::Ok, S::Error> {
@@ -21,7 +21,6 @@ macro_rules! serde_conv {
 	}
 }
 
-serde_conv!(serde_timestamp, DOMTimeStamp, |x: f64| x as _);
 serde_conv!(serde_pos_err_code, PositionErrorCode, |x: u16| match x {
 	1 => PositionErrorCode::PermissionDenied,
 	2 => PositionErrorCode::PositionUnavailable,
@@ -42,14 +41,13 @@ use smart_default::*;
 
 pub type DOMTimeStamp = u64;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Copy, Clone, Deserialize)]
 pub struct Position {
 	pub coords: Coordinates,
-	#[serde(with = "serde_timestamp")] // TODO: ensure it won't truncate
-	pub timestamp: DOMTimeStamp, // TODO: if u64 is used directly, it causes: ConversionError { kind: Custom("invalid type: floating point 1535164942454, expected u64") }
+	pub timestamp: DOMTimeStamp,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Copy, Clone, Deserialize)]
 pub struct Coordinates {
 	pub latitude: f64,
 	pub longitude: f64,
@@ -61,7 +59,7 @@ pub struct Coordinates {
 	pub speed: Option<f64>,
 }
 
-#[derive(Debug, Serialize, SmartDefault)]
+#[derive(Debug, Copy, Clone, Serialize, SmartDefault)]
 pub struct PositionOptions {
 	#[serde(rename = "enableHighAccuracy")]
 	pub enable_high_accuracy: bool,
@@ -72,7 +70,7 @@ pub struct PositionOptions {
 	pub maximum_age: u32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct PositionError {
 	#[serde(with = "serde_pos_err_code")]
 	pub code: PositionErrorCode,
@@ -80,7 +78,7 @@ pub struct PositionError {
 }
 
 #[repr(u16)]
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum PositionErrorCode {
 	PermissionDenied = 1,
 	PositionUnavailable = 2,
